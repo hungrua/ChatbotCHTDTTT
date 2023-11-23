@@ -1,3 +1,4 @@
+from dto.rule import Rule 
 class Suy_Dien_Tien:
 
     def __init__(self,rule,fact,file_name):
@@ -50,9 +51,14 @@ class Suy_Dien_Tien:
             if rule_end == False:
                 break
         return road,facts
-    # def read_rule(self,rule):
-    #     new_rule=[]
-    #     for i in rule:
+    def read_rule(self,rule):
+        new_rule=[]
+        for i in rule:
+            rule_id = i['idLuat']
+            left = i['trieuChung']
+            right = i['benh']
+            new_rule.append(Rule(rule_id,left,right))
+        return new_rule
 
 
 
