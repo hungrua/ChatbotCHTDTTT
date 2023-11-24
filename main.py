@@ -4,13 +4,15 @@ from dto.dao import Converter
 from dto.disease import Disease
 from dto.sympton import Symptom
 from dto.user import User
-
+from dto.rule import Rule
 user = User(None,None,None,None)
 db = Converter()
 db.getTrieuChung()
 db.getTapBenh()
 db.getSuyDienTien()
 trieuChung = db.tapTrieuChung
+rule = db.tapSuyDienTien
+
 
 def introduce_question():
     print("-->Chatbot: Xin chào, tôi là chatbot chuẩn đoán bệnh về xương khớp!")
@@ -49,9 +51,84 @@ def confirm_question():
     )
     print([i for i in NewAllSymLst])
     return NewAllSymLst
-# def where_question(listSymptom):
+def where_question(listSymptom):
+    print("-->Chatbot: Để phục vụ cho việc chẩn đoán bệnh mà bạn đang mắc phải")
+    print("-->Chatbot: Vui lòng trả lời trung thực 3 câu hỏi bắt buộc sau!")
+    print("-->Chatbot: Bạn bị đau ở vị trí nào sau đây ? ")
+    list_where_symptom = []
+    index = 1
+    for i in range(1,12):
+        dict_where_symptom = {}
+        dict_where_symptom['index'] = str(index);
+        dict_where_symptom['id'] = trieuChung[i]['id']
+        dict_where_symptom['name'] = trieuChung[i]['name']
+        list_where_symptom.append(dict_where_symptom)
+        print(index, trieuChung[i]['name'])
+        index+=1
+        dict_where_symptom = {}
+    print('-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," ')
+    answer_where = input().split(",")
+    for i in list_where_symptom:
+        # print(type(i['index']))
+        if i['index'] in answer_where:
+            print("triệu chứng đau ở đâu", i["id"])
+            listSymptom.append(i['id'])
+    print([i for i in listSymptom])
+    return listSymptom
+def how_question(listSymptom):
+    print("-->Chatbot: Dấu hiệu cơn đau của bạn như thế nào ?")
+    list_how_symptom = []
+    index = 1
+    for i in range(12,23):
+        dict_how_symptom = {}
+        dict_how_symptom['index'] = str(index);
+        dict_how_symptom['id'] = trieuChung[i]['id']
+        dict_how_symptom['name'] = trieuChung[i]['name']
+        list_how_symptom.append(dict_how_symptom)
+        print(index, trieuChung[i]['name'])
+        index+=1
+        dict_how_symptom = {}
+    print('-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," ')
+    answer_how = input().split(",")
+    for i in list_how_symptom:
+        # print(type(i['index']))
+        if i['index'] in answer_how:
+            print("triệu chứng đau như thế nào", i["id"])
+            listSymptom.append(i['id'])
+    print([i for i in listSymptom])
+    return listSymptom
+def when_question(listSymptom):
+    print("-->Chatbot: Cơn đau của bạn xuất hiện khi nào ?")
+    list_when_symptom = []
+    index = 1
+    for i in range(23,30):
+        dict_when_symptom = {}
+        dict_when_symptom['index'] = str(index);
+        dict_when_symptom['id'] = trieuChung[i]['id']
+        dict_when_symptom['name'] = trieuChung[i]['name']
+        list_when_symptom.append(dict_when_symptom)
+        print(index, trieuChung[i]['name'])
+        index+=1
+        dict_when_symptom = {}
+    print('-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," ')
+    answer_when = input().split(",")
+    for i in list_when_symptom:
+        # print(type(i['index']))
+        if i['index'] in answer_when:
+            print("triệu chứng đau như thế nào", i["id"])
+            listSymptom.append(i['id'])
+    print([i for i in listSymptom])
+    return listSymptom
+
 
 if __name__ =="__main__":
-    user = introduce_question()
+    # user = introduce_question()
     listTrieuChung = confirm_question()
-    
+    # listTrieuChung = where_question()
+    listTrieuChung = where_question(listTrieuChung)
+    listTrieuChung = how_question(listTrieuChung)
+    listTrieuChung = when_question(listTrieuChung)
+    suydientien = Suy_Dien_Tien(rule,listTrieuChung)
+    rules = suydientien.read_rule(rule)
+    # print(rules)
+    print(suydientien.suy_dien_tien(listTrieuChung))

@@ -37,7 +37,7 @@ class Converter:
     def getSuyDienTien(self):
         dbSuyDienTien = mydb.cursor()
         dbSuyDienTien.execute(
-            "SELECT law_id,symptom_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='tien'  "
+            "SELECT law_id,symptom_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='tien' ORDER BY symptom_id  "
         )
         sdt = dbSuyDienTien.fetchall()
         # trieuChung = []
