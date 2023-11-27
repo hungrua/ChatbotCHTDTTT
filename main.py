@@ -131,4 +131,7 @@ if __name__ =="__main__":
     suydientien = Suy_Dien_Tien(rule,listTrieuChung)
     rules = suydientien.read_rule(rule)
     # print(rules)
-    print(suydientien.suy_dien_tien(listTrieuChung))
+    suyDienTienKq = suydientien.suy_dien_tien(listTrieuChung)
+    print(suyDienTienKq[2])
+    # db.getSuyDienLui(suyDienTienKq[2])
+    

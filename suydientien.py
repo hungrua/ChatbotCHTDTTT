@@ -16,6 +16,7 @@ class Suy_Dien_Tien:
         # self.result, self.road, self.facts = self.forward_chaining(rules, facts)
         self.rule = self.read_rule(rule)
         self.facts = facts
+        self.disease = []
         # self.output += "PART 3. Kết quả\n"
         # self.print_results(self.result, self.road,self.facts)
 
@@ -44,6 +45,7 @@ class Suy_Dien_Tien:
                     rule_end = True
                     rule.flag1 = True
                     road.append(rule.rule_id)
+                    self.disease.append(rule.right)
                     facts.append(rule.right)
                     # self.output+= f" luật được sử dụng. Cập nhật fact : '{facts[:]}' \n"
                     break
@@ -51,7 +53,7 @@ class Suy_Dien_Tien:
                 #     self.output+= f" không sử dụng được luật này do thiếu '{missing}' \n "
             if rule_end == False:
                 break
-        return road,facts
+        return road,facts,self.disease
     def read_rule(self,rule):
         new_rule=[]
         for i in rule:

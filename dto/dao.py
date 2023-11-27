@@ -49,23 +49,20 @@ class Converter:
             luatSuyDienTien['benh'] = sdt[i][2]
             self.tapSuyDienTien.append(luatSuyDienTien)
             luatSuyDienTien ={}
-
-            # trieuChung.append(sdt[i][1])
-            # benh.append(sdt[i][2])
-        # tmp = trieuChung[0]
-        # benhCuaTrieuChung = []
-        
-        # for i in range(len(trieuChung)):
-        #     if(tmp == trieuChung[i]):
-        #         benhCuaTrieuChung.append(benh[i])
-        #     else :
-        #         luatSuyDienTien['trieuChung'] = tmp
-        #         luatSuyDienTien['benh']= benhCuaTrieuChung
-        #         self.tapSuyDienTien.append(luatSuyDienTien)
-        #         luatSuyDienTien={}
-        #         tmp = trieuChung[i]
-        #         benhCuaTrieuChung = []
-        #         benhCuaTrieuChung.append(benh[i])
+    def getSuyDienLui(self,benhNghiNgo):
+        value =""
+        for i in range(len(benhNghiNgo)):
+            value+= "disease_id="
+            if(i!=len(benhNghiNgo)-1):
+                value+= "'" + benhNghiNgo[i]+ "' OR "
+            else :
+                value+= "'" + benhNghiNgo[i]+ "'"
+        dbSuyDienLui = mydb.cursor()
+        dbSuyDienLui.execute(
+             "SELECT law_id,symptom_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='lui' and ("+value+" ) ORDER BY disease_id,symptom_id,cause_id  "
+        )
+        sdl = dbSuyDienLui.fetchall()
+        print(sdl)
 if __name__ == '__main__':
     converter = Converter()
     converter.getSuyDienTien()
