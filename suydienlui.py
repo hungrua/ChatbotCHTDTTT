@@ -8,7 +8,6 @@ class Suy_Dien_Lui:
 
 
     def suy_dien_lui(self,facts):
-        check_pass = False;
         for rule in self.rules:     
             for fact in rule['left']:
                 if fact.id in facts:
@@ -31,11 +30,12 @@ class Suy_Dien_Lui:
                     print("======================")
 
             fact_set = set(facts)
-            rule_set = set(rule['left'])
-            print(f"Rule_set {rule_set}")
-            print(f"Fact_set {fact_set}")
+            tmp = []
+            for oject in rule['left']:
+                tmp.append(oject.id)
+            rule_set = set(tmp)
             if(rule_set.issubset(fact_set)):
-                return rule.right
+                return rule['right']
         return "Không có bệnh nào"            
 
 

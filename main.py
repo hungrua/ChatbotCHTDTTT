@@ -140,5 +140,5 @@ if __name__ =="__main__":
         print(f"{i+1} {suyDienTienKq[2][i]}");
     db.getSuyDienLui(suyDienTienKq[2])
     suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
-    suydienlui.suy_dien_lui(listTrieuChung)
+    print(suydienlui.suy_dien_lui(listTrieuChung))
     
