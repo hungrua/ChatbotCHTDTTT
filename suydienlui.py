@@ -12,7 +12,7 @@ class Suy_Dien_Lui:
             right = i['benh']
             new_rule.append(Rule(rule_id,left,right))
         return new_rule
-    def suy_dien_lui(self,facts,goal):
+    # def suy_dien_lui(self,facts,goal):
         # for rule in self.rules:
         #     if rule.left in facts:
         

@@ -59,13 +59,31 @@ class Converter:
                 value+= "'" + benhNghiNgo[i]+ "'"
         dbSuyDienLui = mydb.cursor()
         dbSuyDienLui.execute(
-             "SELECT law_id,symptom_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='lui' and ("+value+" ) ORDER BY disease_id,symptom_id,cause_id  "
+             "SELECT law_id,symptom_id,cause_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='lui' and ("+value+" ) ORDER BY disease_id,law_id,symptom_id,cause_id  "
         )
         sdl = dbSuyDienLui.fetchall()
-        print(sdl)
+        left = []
+        right = ""
+        rules = []
+        law_id = sdl[0][0];
+        luatSuyDienLui = {}
+        for i in range (len(sdl)):
+            if(sdl[i][0] != law_id):
+                luatSuyDienLui['rule_id'] = law_id
+                luatSuyDienLui['left'] = left
+                luatSuyDienLui['right'] = right
+                rules.append(luatSuyDienLui)
+                luatSuyDienLui ={}
+                law_id = sdl[i][0]
+                left = []
+                right = ""
+            left.append( sdl[i][1] if sdl[i][1]!=None else sdl[i][2])
+            right = sdl[i][3]
+        print(rules)
 if __name__ == '__main__':
     converter = Converter()
     converter.getSuyDienTien()
+    converter.getSuyDienLui(['B1','B2'])
     
 
 
