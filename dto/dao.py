@@ -2,10 +2,13 @@ import re
 
 import mysql.connector
 import json
+from dto.cause import Cause
+from dto.sympton import Symptom
+
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password="root",
     database="kbs"
 )
 class Converter:
@@ -58,28 +61,56 @@ class Converter:
             else :
                 value+= "'" + benhNghiNgo[i]+ "'"
         dbSuyDienLui = mydb.cursor()
+        # dbSuyDienLui.execute(
+        #      "SELECT law_id,symptom_id,cause_id,disease_id, symptom.name, cause.content from inference,rule where inference.law_id = rule.id and rule.type ='lui' and ("+value+" ) ORDER BY disease_id,law_id,symptom_id,cause_id  "
+        # )
+
+        # format: id, law_id, symptom_id, Cause_id, disease_id, id, type, id, content, id, name
         dbSuyDienLui.execute(
-             "SELECT law_id,symptom_id,cause_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='lui' and ("+value+" ) ORDER BY disease_id,law_id,symptom_id,cause_id  "
+            "select * from inference " +
+            "left join rule on inference.law_id = rule.id " +
+            "left join cause on inference.cause_id = cause.id " +
+            "left join symptom on inference.symptom_id = symptom.id " +
+            "where disease_id = ("+value+")"
         )
         sdl = dbSuyDienLui.fetchall()
+        print(sdl)
         left = []
         right = ""
         rules = []
+        causes = []
+        symptoms = []
         law_id = sdl[0][0];
         luatSuyDienLui = {}
+
         for i in range (len(sdl)):
+            # format các TC rời rạc thành 1 mảng TC theo các bệnh
             if(sdl[i][0] != law_id):
                 luatSuyDienLui['rule_id'] = law_id
                 luatSuyDienLui['left'] = left
                 luatSuyDienLui['right'] = right
-                rules.append(luatSuyDienLui)
+                self.tapSuyDienLui.append(luatSuyDienLui)
                 luatSuyDienLui ={}
                 law_id = sdl[i][0]
                 left = []
                 right = ""
-            left.append( sdl[i][1] if sdl[i][1]!=None else sdl[i][2])
+            left.append( sdl[i][1] if sdl[i][1] != None else sdl[i][2])
             right = sdl[i][3]
-        print(rules)
+
+            # khoi tao đối tượng Cause
+            cause_id = sdl[i][3]
+            cause_content = sdl[i][8]
+            causes.append(Cause(cause_id, cause_content))
+
+            # khoi tao doi tuong Symptom
+            symptom_id = sdl[i][9]
+            symptom_name = sdl[i][10]
+            symptoms.append(Symptom(symptom_id, symptom_name))
+
+
+        #print(self.tapSuyDienLui)
+
+
 if __name__ == '__main__':
     converter = Converter()
     converter.getSuyDienTien()

@@ -1,7 +1,7 @@
 from dto.rule import Rule 
 class Suy_Dien_Tien:
 
-    def __init__(self,rule,facts):
+    def __init__(self, rule, facts):
         # self.iteration = 0
         # self.output = ""
         # self.output_file_name = None
@@ -22,7 +22,7 @@ class Suy_Dien_Tien:
 
         # self.write_output(file_name)
         # print("Kết quả suy diễn tiến được lưu tại file: %s." % self.output_file_name)
-    def suy_dien_tien(self,facts):
+    def suy_dien_tien(self, facts):
         iteration = 0
         road = []
         while True:
@@ -54,13 +54,15 @@ class Suy_Dien_Tien:
             if rule_end == False:
                 break
         return road,facts,self.disease
-    def read_rule(self,rule):
+
+
+    def read_rule(self, rule):
         new_rule=[]
         for i in rule:
             rule_id = i['idLuat']
             left = i['trieuChung']
             right = i['benh']
-            new_rule.append(Rule(rule_id,left,right))
+            new_rule.append(Rule(rule_id, left, right))
         return new_rule
 
 

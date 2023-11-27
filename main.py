@@ -97,6 +97,8 @@ def how_question(listSymptom):
             listSymptom.append(i['id'])
     print([i for i in listSymptom])
     return listSymptom
+
+
 def when_question(listSymptom):
     print("-->Chatbot: Cơn đau của bạn xuất hiện khi nào ?")
     list_when_symptom = []
@@ -128,7 +130,7 @@ if __name__ =="__main__":
     listTrieuChung = where_question(listTrieuChung)
     listTrieuChung = how_question(listTrieuChung)
     listTrieuChung = when_question(listTrieuChung)
-    suydientien = Suy_Dien_Tien(rule,listTrieuChung)
+    suydientien = Suy_Dien_Tien(rule, listTrieuChung)
     rules = suydientien.read_rule(rule)
     # print(rules)
     suyDienTienKq = suydientien.suy_dien_tien(listTrieuChung)
