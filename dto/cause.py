@@ -1,6 +1,8 @@
 
 class Cause:
-    def __init__(self, id, content):
+    def __init__(self, id, name):
         self.id = id
-        self.content = content
+        self.name = name
         self.flag = False
+    def __str__(self) :
+        return self.id

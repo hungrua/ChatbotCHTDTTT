@@ -1,5 +1,6 @@
 import sys
 from suydientien import Suy_Dien_Tien
+from suydienlui import Suy_Dien_Lui
 from dto.dao import Converter
 from dto.disease import Disease
 from dto.sympton import Symptom
@@ -134,6 +135,10 @@ if __name__ =="__main__":
     rules = suydientien.read_rule(rule)
     # print(rules)
     suyDienTienKq = suydientien.suy_dien_tien(listTrieuChung)
-    print(suyDienTienKq[2])
-    # db.getSuyDienLui(suyDienTienKq[2])
+    print("Dựa vào các dấu hiệu trên chúng tôi dự đoán bạn có thể bị các bệnh sau : ")
+    for i in range(len(suyDienTienKq[2])):
+        print(f"{i+1} {suyDienTienKq[2][i]}");
+    db.getSuyDienLui(suyDienTienKq[2])
+    suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
+    suydienlui.suy_dien_lui(listTrieuChung)
     

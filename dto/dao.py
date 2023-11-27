@@ -8,7 +8,7 @@ from dto.sympton import Symptom
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="1234",
     database="kbs"
 )
 class Converter:
@@ -71,50 +71,54 @@ class Converter:
             "left join rule on inference.law_id = rule.id " +
             "left join cause on inference.cause_id = cause.id " +
             "left join symptom on inference.symptom_id = symptom.id " +
-            "where disease_id = ("+value+")"
+            "where rule.type='lui' and ( "+value+" )  ORDER BY disease_id,inference.id,symptom_id,cause_id"
         )
         sdl = dbSuyDienLui.fetchall()
-        print(sdl)
         left = []
         right = ""
         rules = []
         causes = []
         symptoms = []
-        law_id = sdl[0][0];
+        law_id = sdl[0][1];
         luatSuyDienLui = {}
 
         for i in range (len(sdl)):
             # format các TC rời rạc thành 1 mảng TC theo các bệnh
-            if(sdl[i][0] != law_id):
+            if(sdl[i][1] != law_id):
                 luatSuyDienLui['rule_id'] = law_id
                 luatSuyDienLui['left'] = left
                 luatSuyDienLui['right'] = right
                 self.tapSuyDienLui.append(luatSuyDienLui)
                 luatSuyDienLui ={}
-                law_id = sdl[i][0]
+                law_id = sdl[i][1]
                 left = []
                 right = ""
-            left.append( sdl[i][1] if sdl[i][1] != None else sdl[i][2])
-            right = sdl[i][3]
+            right = sdl[i][4]
 
             # khoi tao đối tượng Cause
             cause_id = sdl[i][3]
-            cause_content = sdl[i][8]
-            causes.append(Cause(cause_id, cause_content))
+            if(cause_id!=None):
+                cause_content = sdl[i][8]
+                causes.append(Cause(cause_id, cause_content))
+                left.append(Cause(cause_id, cause_content))
 
             # khoi tao doi tuong Symptom
-            symptom_id = sdl[i][9]
-            symptom_name = sdl[i][10]
-            symptoms.append(Symptom(symptom_id, symptom_name))
-
-
-        #print(self.tapSuyDienLui)
-
+            else :
+                symptom_id = sdl[i][9]
+                symptom_name = sdl[i][10]
+                symptoms.append(Symptom(symptom_id, symptom_name))
+                left.append(Symptom(symptom_id, symptom_name))
+    
+        luatSuyDienLui['rule_id'] = law_id
+        luatSuyDienLui['left'] = left
+        luatSuyDienLui['right'] = right
+        self.tapSuyDienLui.append(luatSuyDienLui)
 
 if __name__ == '__main__':
     converter = Converter()
     converter.getSuyDienTien()
-    converter.getSuyDienLui(['B1','B2'])
+    converter.getSuyDienLui(['B3'])
+    
     
 
 

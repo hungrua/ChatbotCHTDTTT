@@ -3,3 +3,5 @@ class Symptom:
         self.id = id
         self.name = name
         self.flag = False
+    def __str__(self) :
+        return self.id
