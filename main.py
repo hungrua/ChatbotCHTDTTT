@@ -1,11 +1,12 @@
-import sys
+
+
 from suydientien import Suy_Dien_Tien
 from suydienlui import Suy_Dien_Lui
 from dto.dao import Converter
 from dto.disease import Disease
 from dto.sympton import Symptom
 from dto.user import User
-from dto.rule import Rule
+
 user = User(None,None,None,None)
 db = Converter()
 db.getTrieuChung()
@@ -34,7 +35,7 @@ def introduce_question():
 
     print("-->Chatbot: Cảm ơn bạn đã cung cấp đủ thông tin!")
 
-    return user;
+    return user
 
 def confirm_question():
     NewAllSymLst = []
@@ -45,7 +46,7 @@ def confirm_question():
     if(answer=="0"):
         print("-->Chatbot: Có vẻ bạn không có dấu hiệu đặc trưng của các bệnh về xương khớp")
         print("-->Chatbot: Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!")
-        return False;
+        return False
     NewAllSymLst.append(trieuChung[0]['id'])
     print(
         f'-->Chatbot: Danh sách mã các triệu chứng bạn đang mắc phải:'
@@ -131,14 +132,25 @@ if __name__ =="__main__":
     listTrieuChung = where_question(listTrieuChung)
     listTrieuChung = how_question(listTrieuChung)
     listTrieuChung = when_question(listTrieuChung)
+
     suydientien = Suy_Dien_Tien(rule, listTrieuChung)
-    rules = suydientien.read_rule(rule)
+    # rules = suydientien.read_rule(rule)
     # print(rules)
-    suyDienTienKq = suydientien.suy_dien_tien(listTrieuChung)
+    suyDienTienKq = suydientien.suy_dien_tien()
     print("Dựa vào các dấu hiệu trên chúng tôi dự đoán bạn có thể bị các bệnh sau : ")
-    for i in range(len(suyDienTienKq[2])):
-        print(f"{i+1} {suyDienTienKq[2][i]}");
+    print("Tổng số bệnh nghi ngờ:", len(suyDienTienKq[2]))
+    for i in suyDienTienKq[2]:
+        print(i)
+        print("=============================")
+
     db.getSuyDienLui(suyDienTienKq[2])
     suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
-    suydienlui.suy_dien_lui(listTrieuChung)
+    result = suydienlui.suy_dien_lui(listTrieuChung)
+    print(result)
+    # for i in rule:
+    #     print(i.rule_id)
+    #     print(i.left.id, i.left.name)
+    #     print(i.right.id)
+    #     print(i.right.name)
+    #     print("==================================")
     

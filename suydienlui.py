@@ -5,16 +5,14 @@ class Suy_Dien_Lui:
         self.rules = rules
         self.facts = facts
         self.goal = goal
-
+        print(rules)
 
     def suy_dien_lui(self,facts):
-        check_pass = False;
         for rule in self.rules:     
             for fact in rule['left']:
                 if fact.id in facts:
                     print(fact) 
                     continue
-                print("Hung dep trai")
                 if  (fact.id not in facts and fact.flag==True):
                     break
                 fact.flag==True
@@ -23,7 +21,7 @@ class Suy_Dien_Lui:
                 print("0. Không")
                 answer = int(input())
                 if(answer==0):
-                    break;
+                    break
                 else :
                     facts.append(fact.id)
                     print("======================")
@@ -32,8 +30,8 @@ class Suy_Dien_Lui:
 
             fact_set = set(facts)
             rule_set = set(rule['left'])
-            print(f"Rule_set {rule_set}")
-            print(f"Fact_set {fact_set}")
+            # print(f"Rule_set {rule_set}")
+            # print(f"Fact_set {fact_set}")
             if(rule_set.issubset(fact_set)):
                 return rule.right
         return "Không có bệnh nào"            

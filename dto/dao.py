@@ -1,14 +1,14 @@
-import re
 
 import mysql.connector
-import json
+from dto.rule import Rule
+from dto.disease import Disease
 from dto.cause import Cause
 from dto.sympton import Symptom
 
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password="123456789",
     database="kbs"
 )
 class Converter:
@@ -40,32 +40,25 @@ class Converter:
     def getSuyDienTien(self):
         dbSuyDienTien = mydb.cursor()
         dbSuyDienTien.execute(
-            "SELECT law_id,symptom_id,disease_id from inference,rule where inference.law_id = rule.id and rule.type ='tien' ORDER BY symptom_id  "
+            "SELECT law_id, symptom_id, disease_id, symptom.name, disease.name from inference,rule,symptom,disease " + 
+            "where inference.law_id = rule.id and inference.disease_id = disease.id and inference.symptom_id = symptom.id and rule.type ='tien' ORDER BY symptom_id "
         )
         sdt = dbSuyDienTien.fetchall()
-        # trieuChung = []
-        # benh = []
-        luatSuyDienTien = {}
         for i in range(len(sdt)):
-            luatSuyDienTien['idLuat'] = sdt[i][0]
-            luatSuyDienTien['trieuChung'] = sdt[i][1]
-            luatSuyDienTien['benh'] = sdt[i][2]
-            self.tapSuyDienTien.append(luatSuyDienTien)
-            luatSuyDienTien ={}
+            rule = Rule(sdt[i][0], Symptom(sdt[i][1], sdt[i][3]), Disease(sdt[i][2], sdt[i][4]))
+            self.tapSuyDienTien.append(rule)
+
     def getSuyDienLui(self,benhNghiNgo):
         value =""
         for i in range(len(benhNghiNgo)):
+            print("Bệnh", benhNghiNgo[i])
             value+= "disease_id="
             if(i!=len(benhNghiNgo)-1):
-                value+= "'" + benhNghiNgo[i]+ "' OR "
+                value+= "'" + benhNghiNgo[i].id+ "' OR "
             else :
-                value+= "'" + benhNghiNgo[i]+ "'"
+                value+= "'" + benhNghiNgo[i].id+ "'"
         dbSuyDienLui = mydb.cursor()
-        # dbSuyDienLui.execute(
-        #      "SELECT law_id,symptom_id,cause_id,disease_id, symptom.name, cause.content from inference,rule where inference.law_id = rule.id and rule.type ='lui' and ("+value+" ) ORDER BY disease_id,law_id,symptom_id,cause_id  "
-        # )
-
-        # format: id, law_id, symptom_id, Cause_id, disease_id, id, type, id, content, id, name
+        print("Value", value)
         dbSuyDienLui.execute(
             "select * from inference " +
             "left join rule on inference.law_id = rule.id " +
@@ -79,7 +72,7 @@ class Converter:
         rules = []
         causes = []
         symptoms = []
-        law_id = sdl[0][1];
+        law_id = sdl[0][1]
         luatSuyDienLui = {}
 
         for i in range (len(sdl)):
@@ -114,10 +107,10 @@ class Converter:
         luatSuyDienLui['right'] = right
         self.tapSuyDienLui.append(luatSuyDienLui)
 
-if __name__ == '__main__':
-    converter = Converter()
-    converter.getSuyDienTien()
-    converter.getSuyDienLui(['B3'])
+# if __name__ == '__main__':
+#     converter = Converter()
+#     converter.getSuyDienTien()
+#     converter.getSuyDienLui(['B3'])
     
     
 

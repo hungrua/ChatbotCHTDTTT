@@ -1,59 +1,39 @@
 from dto.rule import Rule 
+from dto.data import Data
+
 class Suy_Dien_Tien:
 
     def __init__(self, rule, facts):
-        # self.iteration = 0
-        # self.output = ""
-        # self.output_file_name = None
-
-        # self.output += "PART 1. Dữ liệu (Luật)\n"
-        # rules, facts, goal = self.read_data(file_name) # lấy luật , sự thật và mục tiêu
-        # rules=self.read_rule(rule)
-        
-        # self.print_data(rules, facts)
-
-        # self.output += "PART 2. Suy Diễn\n"
-        # self.result, self.road, self.facts = self.forward_chaining(rules, facts)
-        self.rule = self.read_rule(rule)
+        self.rules = rule
         self.facts = facts
         self.disease = []
-        # self.output += "PART 3. Kết quả\n"
-        # self.print_results(self.result, self.road,self.facts)
 
-        # self.write_output(file_name)
-        # print("Kết quả suy diễn tiến được lưu tại file: %s." % self.output_file_name)
-    def suy_dien_tien(self, facts):
+    def suy_dien_tien(self):
         iteration = 0
         road = []
         while True:
             rule_end = False
             iteration+=1
-            # self.output+= f"STEP '{iteration}'\n"
-            for rule in self.rule:
-                # self.output+= str(rule)
-                if rule.flag1 == True:
-                    # self.output+= " luật này đã được chứng minh.\n"
+            for rule in self.rules:
+                if rule.flag1 == True: # luật được chứng minh
                     continue
-                if rule.flag2 == True:
-                    # self.output+= " không xét do vế phải đã được chứng minh.\n"
+                if rule.flag2 == True: # vế phải của luật đã được chứng minh
                     continue
-                if rule.right in facts:
+                if rule.right.id in self.facts:
                     rule.flag2 = True
                     continue
-                missing = rule.check(facts)
+                missing = rule.check(self.facts, rule.left.id)
                 if missing is None:
+                    print("Missing", missing)
                     rule_end = True
                     rule.flag1 = True
                     road.append(rule.rule_id)
-                    self.disease.append(rule.right)
-                    facts.append(rule.right)
-                    # self.output+= f" luật được sử dụng. Cập nhật fact : '{facts[:]}' \n"
+                    self.disease.append(Data(rule.right.id, rule.right.name)) # Tập bệnh nghi ngờ [{idBenh: , tenBenh: }]
+                    self.facts.append(rule.right.id) # Tập triệu chứng
                     break
-                # else:
-                #     self.output+= f" không sử dụng được luật này do thiếu '{missing}' \n "
             if rule_end == False:
                 break
-        return road,facts,self.disease
+        return road, self.facts, self.disease
 
 
     def read_rule(self, rule):
