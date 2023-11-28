@@ -147,10 +147,3 @@ if __name__ =="__main__":
     suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
     result = suydienlui.suy_dien_lui(listTrieuChung)
     print(result)
-    # for i in rule:
-    #     print(i.rule_id)
-    #     print(i.left.id, i.left.name)
-    #     print(i.right.id)
-    #     print(i.right.name)
-    #     print("==================================")
-    

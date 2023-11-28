@@ -4,4 +4,4 @@ class Symptom:
         self.name = name
         self.flag = False
     def __str__(self) :
-        return self.id
+        return f"'{self.id}' : '{self.flag}'"

@@ -5,27 +5,30 @@ class Suy_Dien_Lui:
         self.rules = rules
         self.facts = facts
         self.goal = goal
-        print(rules)
+        self.check = []
 
     def suy_dien_lui(self,facts):
         for rule in self.rules:     
             for fact in rule['left']:
                 if fact.id in facts:
-                    print(fact) 
                     continue
-                if  (fact.id not in facts and fact.flag==True):
+                if  (fact.id not in facts and fact.id in self.check):
+                    print("------------Triệu chứng đã hỏi lại mà không có trong danh sách", fact.id)
+                    print("======================================")
                     break
-                fact.flag==True
+                self.check.append(fact.id)
                 print("Bạn có " + fact.name + " không?")
                 print("1. Có")
                 print("0. Không")
                 answer = int(input())
+                print("Cờ đánh dấu", fact.flag)
+                print(f"Xét xong '{fact}'")
                 if(answer==0):
                     break
                 else :
                     facts.append(fact.id)
                     print("======================")
-                    print(facts)
+                    print("Danh sách các triệu chứng", facts)
                     print("======================")
 
             fact_set = set(facts)

@@ -51,7 +51,7 @@ class Converter:
     def getSuyDienLui(self,benhNghiNgo):
         value =""
         for i in range(len(benhNghiNgo)):
-            print("Bệnh", benhNghiNgo[i])
+            # print("Bệnh", benhNghiNgo[i])
             value+= "disease_id="
             if(i!=len(benhNghiNgo)-1):
                 value+= "'" + benhNghiNgo[i].id+ "' OR "
@@ -69,7 +69,6 @@ class Converter:
         sdl = dbSuyDienLui.fetchall()
         left = []
         right = ""
-        rules = []
         causes = []
         symptoms = []
         law_id = sdl[0][1]
