@@ -32,11 +32,14 @@ class Suy_Dien_Lui:
                     print("======================")
 
             fact_set = set(facts)
-            rule_set = set(rule['left'])
+            tmp = []
+            for oject in rule['left']:
+                tmp.append(oject.id)
+            rule_set = set(tmp)
             # print(f"Rule_set {rule_set}")
             # print(f"Fact_set {fact_set}")
             if(rule_set.issubset(fact_set)):
-                return rule.right
+                return rule['right']
         return "Không có bệnh nào"            
 
 

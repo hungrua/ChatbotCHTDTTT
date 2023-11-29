@@ -4,11 +4,12 @@ from dto.rule import Rule
 from dto.disease import Disease
 from dto.cause import Cause
 from dto.sympton import Symptom
+from dto.advice import *
 
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="123456789",
+    password="1234",
     database="kbs"
 )
 class Converter:
@@ -17,6 +18,7 @@ class Converter:
         self.tapTrieuChung = []
         self.tapSuyDienTien = []
         self.tapSuyDienLui = []
+        
     def getTapBenh(self):
         dbbenh = mydb.cursor()
         dbbenh.execute("SELECT * FROM kbs.disease;")
@@ -27,6 +29,7 @@ class Converter:
             benh['name'] = i[1]
             self.tapBenh.append(benh)
             benh = {}
+            
     def getTrieuChung(self):
         dbTrieuChung = mydb.cursor()
         dbTrieuChung.execute("SELECT * FROM kbs.symptom;")
@@ -37,6 +40,7 @@ class Converter:
             trieuChung['name'] = i[1]
             self.tapTrieuChung.append(trieuChung)
             trieuChung = {}
+            
     def getSuyDienTien(self):
         dbSuyDienTien = mydb.cursor()
         dbSuyDienTien.execute(
@@ -105,7 +109,36 @@ class Converter:
         luatSuyDienLui['left'] = left
         luatSuyDienLui['right'] = right
         self.tapSuyDienLui.append(luatSuyDienLui)
-
+        
+    def getDiseaseById(self,id):
+        dbBenh = mydb.cursor()
+        dbBenh.execute(
+            "SELECT * FROM disease where id= '"+ id+ "'"
+        )
+        diseases = dbBenh.fetchall()
+        return(diseases[0][0],diseases[0][1])
+    
+    def getAdviceByDisease(self,id,age):
+        dbAdvice = mydb.cursor()
+        dbAdvice.execute(
+            f"SELECT id,advice,disease_id,age FROM advice_for_disease where disease_id= '{id}' and age= '{age}'"
+        )
+        advices = dbAdvice.fetchall()
+        adviceArr = []
+        for advice in advices:
+            adviceArr.append(AdviceForDisease(advice[0],advice[1],advice[2],advice[3]))
+        return adviceArr
+            
+    def getAdviceById(self,id):
+        dbAdvice = mydb.cursor()
+        dbAdvice.execute(
+            f"SELECT id,ask,advice FROM advice_for_all where id like '{id}%'"
+        )
+        advices = dbAdvice.fetchall()
+        adviceArr = []
+        for advice in advices:
+            adviceArr.append(AdviceForAll(advice[0],advice[1],advice[2]))
+        return adviceArr   
 # if __name__ == '__main__':
 #     converter = Converter()
 #     converter.getSuyDienTien()
