@@ -28,6 +28,8 @@ class Suy_Dien_Tien:
                     rule_end = True
                     rule.flag1 = True
                     road.append(rule.rule_id)
+                    # if(self.check(rule.right.id)):
+                    print(self.check(rule.right.id))
                     self.disease.append(Data(rule.right.id, rule.right.name)) # Tập bệnh nghi ngờ [{idBenh: , tenBenh: }]
                     self.facts.append(rule.right.id) # Tập triệu chứng
                     break
@@ -36,14 +38,12 @@ class Suy_Dien_Tien:
         return road, self.facts, self.disease
 
 
-    def read_rule(self, rule):
-        new_rule=[]
-        for i in rule:
-            rule_id = i['idLuat']
-            left = i['trieuChung']
-            right = i['benh']
-            new_rule.append(Rule(rule_id, left, right))
-        return new_rule
+    
+    def check(self, value):
+        for i in self.disease:
+            if(str(value) == str(i.id)):
+                return True
+        return False
 
 
 
