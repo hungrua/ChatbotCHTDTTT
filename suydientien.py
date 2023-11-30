@@ -24,20 +24,17 @@ class Suy_Dien_Tien:
                     continue
                 missing = rule.check(self.facts, rule.left.id)
                 if missing is None:
-                    print("Missing", missing)
                     rule_end = True
                     rule.flag1 = True
                     road.append(rule.rule_id)
                     # if(self.check(rule.right.id)):
-                    print(self.check(rule.right.id))
+                    # print(self.check(rule.right.id))
                     self.disease.append(Data(rule.right.id, rule.right.name)) # Tập bệnh nghi ngờ [{idBenh: , tenBenh: }]
                     self.facts.append(rule.right.id) # Tập triệu chứng
                     break
             if rule_end == False:
                 break
         return road, self.facts, self.disease
-
-
     
     def check(self, value):
         for i in self.disease:

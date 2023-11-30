@@ -6,6 +6,8 @@ from dto.disease import Disease
 from dto.sympton import Symptom
 from dto.user import User
 from colorama import Fore
+import time
+
 user = User(None,1,None,None)
 db = Converter()
 db.getTrieuChung()
@@ -13,6 +15,7 @@ db.getTapBenh()
 db.getSuyDienTien()
 trieuChung = db.tapTrieuChung
 rule = db.tapSuyDienTien
+fact_suy_dien_loi_khuyen = []
 
 def introduce_question():
     print(Fore.YELLOW+"-->Chatbot: Xin chào, tôi là chatbot chuẩn đoán bệnh về xương khớp!")
@@ -23,6 +26,7 @@ def introduce_question():
     print(Fore.RED+f'-->Người dùng: Tên của tôi là, {user.name}')
     print(Fore.YELLOW+"-->Chatbot: Hãy nhập tuổi của bạn")
     user.age = int(input(Fore.RED))
+
     print(Fore.RED+f'-->Người dùng: Tôi {user.age} tuổi')
     print(Fore.YELLOW+"-->Chatbot: Hãy cho tôi biết chiều cao của bạn ( Đơn vị cm)")
     user.height = input(Fore.RED)
@@ -159,7 +163,8 @@ def diet():
     for key in answer:
         for diet in dietAsk:
             if "CD"+key == str(diet.id):
-                print(f"- {diet.advice}")
+                print(Fore.WHITE, diet.advice)
+
 def exerciseHabits():
     exerciseHabits  = db.getAdviceById("TQ")
     print(Fore.YELLOW+"-->Chatbot: Thói quen hoạt động của bạn thuộc loại nào dưới đây ?")
@@ -171,7 +176,8 @@ def exerciseHabits():
     for key in answer:
         for exerciseHabit in exerciseHabits:
             if "TQ"+key == str(exerciseHabit.id):
-                print(f"- {exerciseHabit.advice}")
+                print(Fore.WHITE, exerciseHabit.advice)
+
 if __name__ =="__main__":
     user = introduce_question()
     listTrieuChung = confirm_question()
@@ -189,12 +195,32 @@ if __name__ =="__main__":
     db.getSuyDienLui(suyDienTienKq[2])
     suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
     result = suydienlui.suy_dien_lui(listTrieuChung)
+
+
     print(Fore.YELLOW+f"-->Chatbot: Dựa trên những thông tin mà bạn cung cấp chúng tôi có kết luận sơ bộ là bạn đang mắc bệnh")
-    resultDisease = db.getDiseaseById(result)[1];
+    resultDisease = db.getDiseaseById(result)[1]
     print(resultDisease)
     print(Fore.YELLOW+f"-->Chatbot : Căn cứ vào độ tuổi là {user.age} và bệnh của bạn tôi có một số lời khuyên dành cho bạn như sau :")
-    advices = db.getAdviceByDisease(db.getDiseaseById(result)[0],xetNguongTuoi(db.getDiseaseById(result)[0],user.age))
-    for advice in advices:
-        print(advice)
-    additionAdvice()
     
+
+    # suy diễn tiến cho lời khuyên theo bệnh và độ tuổi
+    fact = db.getDiseaseById(result)[0] + " and " + xetNguongTuoi(db.getDiseaseById(result)[0],user.age)
+    fact_suy_dien_loi_khuyen.append(fact)
+    advices = db.getRuleByAdivce()
+    suyDienTien = Suy_Dien_Tien(advices, fact_suy_dien_loi_khuyen)
+    resultAdvice = suyDienTien.suy_dien_tien()
+
+    time.sleep(2)
+    # liệt kê lời khuyên theo bệnh và khoảng tuổi
+    for i in resultAdvice[2]:
+        print(Fore.WHITE, i.name)
+
+    additionAdvice()
+
+    # for advice in advices:
+    #     print(advice)
+    
+    # listTrieuChung = ['TC01', 'TC07', 'TC23', 'TC27', 'B1', 'Tuoi(<40)']
+    # B1, <40 ==> lời khuyên 1 
+    # B1, >40 ==> lời khuyên 2 
+

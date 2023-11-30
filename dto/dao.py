@@ -4,12 +4,13 @@ from dto.rule import Rule
 from dto.disease import Disease
 from dto.cause import Cause
 from dto.sympton import Symptom
+from dto.data import Data
 from dto.advice import *
 
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password="123456789",
     database="kbs"
 )
 class Converter:
@@ -94,14 +95,14 @@ class Converter:
             # khoi tao đối tượng Cause
             cause_id = sdl[i][3]
             if(cause_id!=None):
-                cause_content = sdl[i][8]
+                cause_content = sdl[i][10]
                 causes.append(Cause(cause_id, cause_content))
                 left.append(Cause(cause_id, cause_content))
 
             # khoi tao doi tuong Symptom
             else :
-                symptom_id = sdl[i][9]
-                symptom_name = sdl[i][10]
+                symptom_id = sdl[i][11]
+                symptom_name = sdl[i][12]
                 symptoms.append(Symptom(symptom_id, symptom_name))
                 left.append(Symptom(symptom_id, symptom_name))
     
@@ -138,7 +139,22 @@ class Converter:
         adviceArr = []
         for advice in advices:
             adviceArr.append(AdviceForAll(advice[0],advice[1],advice[2]))
-        return adviceArr   
+        return adviceArr  
+
+    def getRuleByAdivce(self):
+        dbAdvice = mydb.cursor()
+        dbAdvice.execute(
+            "SELECT inference.id, inference.law_id, inference.disease_id, inference.advice_id, inference.condition_age, advice_for_disease.advice FROM inference, advice_for_disease where inference.advice_id is not null " + 
+            " and inference.advice_id = advice_for_disease.id"
+        )
+        advices = dbAdvice.fetchall()
+        adviceArr = []
+        for advice in advices:
+            # id_benh khoảng tuổi
+            adviceArr.append(Rule(advice[1], Data(advice[2] + " and " + advice[4], advice[4]), AdviceForDisease(advice[3], advice[5])))
+        return adviceArr
+    
+    
 # if __name__ == '__main__':
 #     converter = Converter()
 #     converter.getSuyDienTien()
