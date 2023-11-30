@@ -152,14 +152,14 @@ def diet():
     dietAsk  = db.getAdviceById("CD")
     print(Fore.YELLOW+"-->Chatbot: Chế độ ăn hàng ngày của bạn thuộc loại nào dưới đây ?")
     for i in range(len(dietAsk)):
-        print(f"{i+1}. {dietAsk[i].ask} " )
+        print(f"{i+1}. {dietAsk[i].ask}" )
     print(Fore.YELLOW+'-->Chatbot : Bạn có thể chọn nhiều đáp án cho câu hỏi này,hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," !')
     answer = input(Fore.RED+f"Câu trả lời của tôi là : ").split(",")
     print(Fore.YELLOW,"-->Chatbot: Danh sách các lời khuyên theo chế độ ăn của bạn là: ")
     for key in answer:
         for diet in dietAsk:
             if "CD"+key == str(diet.id):
-                print(f"- {diet.advice}")
+                print(Fore.MAGENTA+f"{diet.advice}")
 def exerciseHabits():
     exerciseHabits  = db.getAdviceById("TQ")
     print(Fore.YELLOW+"-->Chatbot: Thói quen hoạt động của bạn thuộc loại nào dưới đây ?")
@@ -171,7 +171,7 @@ def exerciseHabits():
     for key in answer:
         for exerciseHabit in exerciseHabits:
             if "TQ"+key == str(exerciseHabit.id):
-                print(f"- {exerciseHabit.advice}")
+                print(Fore.MAGENTA+f"{exerciseHabit.advice}")
 if __name__ =="__main__":
     user = introduce_question()
     listTrieuChung = confirm_question()
@@ -180,8 +180,8 @@ if __name__ =="__main__":
     listTrieuChung = when_question(listTrieuChung)
     suydientien = Suy_Dien_Tien(rule, listTrieuChung)
     suyDienTienKq = suydientien.suy_dien_tien()
-    print("Dựa vào các dấu hiệu trên chúng tôi dự đoán bạn có thể bị các bệnh sau : ")
-    print("Tổng số bệnh nghi ngờ:", len(suyDienTienKq[2]))
+    print(Fore.YELLOW,"-->Chatbot: Dựa vào các dấu hiệu trên chúng tôi dự đoán bạn có thể bị các bệnh sau : ")
+    print(Fore.YELLOW,"Tổng số bệnh nghi ngờ:", len(suyDienTienKq[2]))
     for i in suyDienTienKq[2]:
         print(i)
         print("=============================")
@@ -195,6 +195,6 @@ if __name__ =="__main__":
     print(Fore.YELLOW+f"-->Chatbot : Căn cứ vào độ tuổi là {user.age} và bệnh của bạn tôi có một số lời khuyên dành cho bạn như sau :")
     advices = db.getAdviceByDisease(db.getDiseaseById(result)[0],xetNguongTuoi(db.getDiseaseById(result)[0],user.age))
     for advice in advices:
-        print(advice)
+        print(Fore.MAGENTA,advice)
     additionAdvice()
     
