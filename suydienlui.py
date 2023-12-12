@@ -10,7 +10,7 @@ class Suy_Dien_Lui:
     def suy_dien_lui(self,facts):
         for rule in self.rules:     
             for fact in rule['left']:
-                if fact.id in facts:
+                if fact.id in facts: # 
                     continue
                 if  (fact.id not in facts and fact.id in self.check):
                     break
