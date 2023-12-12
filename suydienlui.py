@@ -1,5 +1,8 @@
 from dto.rule import Rule
 from colorama import Fore
+from validate import Validate
+
+validate = Validate()
 class Suy_Dien_Lui:
     def __init__(self, rules, facts, goal):
         self.rules = rules
@@ -18,8 +21,8 @@ class Suy_Dien_Lui:
                 print(Fore.YELLOW,f"-->Chatbot : Bạn có {fact.name} không?")
                 print("1. Có")
                 print("0. Không")
-                answer = int(input(Fore.RED+"-->Người dùng: Câu trả lời của tôi là: "))
-                if(answer==0):
+                answer = validate.validateYesOrNo(input(Fore.RED+"-->Người dùng: Câu trả lời của tôi là: "))
+                if(answer==False):
                     break
                 else :
                     facts.append(fact.id)
