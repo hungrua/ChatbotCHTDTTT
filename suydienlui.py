@@ -5,38 +5,40 @@ class Suy_Dien_Lui:
         self.rules = rules
         self.facts = facts
         self.goal = goal
-        self.check = []
+        self.check = [] #Lưu những triệu chứng đã được hỏi trước đó
 
     def suy_dien_lui(self,facts):
-        for rule in self.rules:     
-            for fact in rule['left']:
-                if fact.id in facts:
+        for rule in self.rules: #Xét từng luật trong tập luật suy diễn lùi    
+            for fact in rule['left']: #Xét từng triệu chứng trong vế trái của luật
+                if fact.id in facts: #Nếu triệu chứng đã có trong tập fact thì bỏ qua triệu chứng này
                     continue
-                if  (fact.id not in facts and fact.id in self.check):
-                    break
-                self.check.append(fact.id)
-                print(Fore.YELLOW,"-->Chatbot : Bạn có " + fact.name + " không?")
+                if  (fact.id not in facts and fact.id in self.check): #Nếu người dùng đã trả lời là không có triệu chứng này thì bỏ qua luật
+                    break 
+                self.check.append(fact.id) #Thêm vào tập triệu chứng được hỏi
+                print(fact.name)
+                print(Fore.YELLOW,"-->Chatbot : Bạn có " + fact.name + " không?") #Hỏi xem có triệu chứng này không?
                 print("1. Có")
                 print("0. Không")
                 answer = int(input(Fore.RED+"-->Người dùng: Câu trả lời của tôi là: "))
                 # print("Cờ đánh dấu", fact.flag)
                 # print(f"Xét xong '{fact}'")
-                if(answer==0):
+                if(answer==0): #Nếu trả lời là không thì bỏ qua luật này
                     break
-                else :
+                else : #Nếu có thêm triệu chứng này vào tập facts
                     facts.append(fact.id)
                     print(Fore.YELLOW,"======================")
                     print(Fore.YELLOW,"Danh sách các triệu chứng", facts)
                     print(Fore.YELLOW,"======================")
-
+            #Kiểm tra xem với tập fact như vậy đã đủ để kết luận bệnh nào chưa
             fact_set = set(facts)
             tmp = []
-            for oject in rule['left']:
-                tmp.append(oject.id)
+            for object in rule['left']:
+                tmp.append(object.id)
             rule_set = set(tmp)
+            #Nếu đủ thì kết luật bệnh
             if(rule_set.issubset(fact_set)):
                 return rule['right']
-        return "Không có bệnh nào"            
+        return "Không có bệnh nào"  #Nếu không xác định được bệnh nào thì kết luận        
 
 
 

@@ -14,10 +14,10 @@ db.getSuyDienTien()
 trieuChung = db.tapTrieuChung
 rule = db.tapSuyDienTien
 
+
 def introduce_question():
     print(Fore.YELLOW+"-->Chatbot: Xin chào, tôi là chatbot chuẩn đoán bệnh về xương khớp!")
     print(Fore.YELLOW+"-->Chatbot: Vui lòng điền một số thông tin cá nhân để tiếp tục!")
-
     print(Fore.YELLOW+"-->Chatbot: Hãy nhập tên của bạn")
     user.name = input(Fore.RED)
     print(Fore.RED+f'-->Người dùng: Tên của tôi là, {user.name}')
@@ -30,10 +30,9 @@ def introduce_question():
     print(Fore.YELLOW+"-->Chatbot: Hãy cho tôi biết cân nặng của bạn ( Đơn vị kg)")
     user.weight = input(Fore.RED)
     print(Fore.RED+f'-->Người dùng: Tôi nặng {user.weight} kg')
-
     print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã cung cấp đủ thông tin!")
-
     return user
+
 
 def confirm_question():
     NewAllSymLst = []
@@ -51,6 +50,7 @@ def confirm_question():
     )
     print([i for i in NewAllSymLst])
     return NewAllSymLst
+
 
 def where_question(listSymptom):
     print(Fore.YELLOW+"-->Chatbot: Để phục vụ cho việc chẩn đoán bệnh mà bạn đang mắc phải")
@@ -77,8 +77,9 @@ def where_question(listSymptom):
     print([i for i in listSymptom])
     return listSymptom
 
+
 def how_question(listSymptom):
-    print(Fore.YELLOW+"-->Chatbot: Dấu hiệu cơn đau của bạn như thế nào ?")
+    print(Fore.YELLOW+"-->Chatbot: Biểu hiệu cơn đau của bạn như thế nào ?")
     list_how_symptom = []
     index = 1
     for i in range(12,23):
@@ -99,6 +100,7 @@ def how_question(listSymptom):
             listSymptom.append(i['id'])
     print([i for i in listSymptom])
     return listSymptom
+
 
 def when_question(listSymptom):
     print(Fore.YELLOW+"-->Chatbot: Cơn đau của bạn xuất hiện khi nào ?")
@@ -123,6 +125,7 @@ def when_question(listSymptom):
     print([i for i in listSymptom])
     return listSymptom
 
+
 def xetNguongTuoi(diseaseId, age):
     if(diseaseId == "B1"):
         if(age >= 40):
@@ -133,6 +136,7 @@ def xetNguongTuoi(diseaseId, age):
             return ">16"
         return "<16"
     return ">00"
+
 
 def additionAdvice():
     print(Fore.YELLOW+f'-->Chatbot: Ngoài ra chúng tôi còn một vài lời khuyên về chế độ ăn và thói quen vận động để giúp bạn hạn chế gặp các bệnh về xương khớp')
@@ -148,6 +152,7 @@ def additionAdvice():
     exerciseHabits()
     print(Fore.YELLOW+"-->Chatbot : Trên đây là các lời khuyên hữu ích dành cho bạn, cảm ơn bạn đã hỏi chat, chúc bạn mau khỏi bệnh")
     
+    
 def diet():
     dietAsk  = db.getAdviceById("CD")
     print(Fore.YELLOW+"-->Chatbot: Chế độ ăn hàng ngày của bạn thuộc loại nào dưới đây ?")
@@ -160,6 +165,8 @@ def diet():
         for diet in dietAsk:
             if "CD"+key == str(diet.id):
                 print(Fore.MAGENTA+f"{diet.advice}")
+                
+                
 def exerciseHabits():
     exerciseHabits  = db.getAdviceById("TQ")
     print(Fore.YELLOW+"-->Chatbot: Thói quen hoạt động của bạn thuộc loại nào dưới đây ?")
@@ -172,29 +179,47 @@ def exerciseHabits():
         for exerciseHabit in exerciseHabits:
             if "TQ"+key == str(exerciseHabit.id):
                 print(Fore.MAGENTA+f"{exerciseHabit.advice}")
+                
+                
 if __name__ =="__main__":
-    user = introduce_question()
-    listTrieuChung = confirm_question()
-    listTrieuChung = where_question(listTrieuChung)
-    listTrieuChung = how_question(listTrieuChung)
-    listTrieuChung = when_question(listTrieuChung)
+    
+    user = introduce_question() #Người dùng nhập thông tin cơ bản
+    
+    listTrieuChung = confirm_question() #Câu hỏi xác nhận
+    listTrieuChung = where_question(listTrieuChung) #Câu hỏi đau ở đâu
+    listTrieuChung = how_question(listTrieuChung) #Câu hỏi đau như thế nào
+    listTrieuChung = when_question(listTrieuChung) #Câu hỏi đau khi nào
+    
+    #Thực hiện suy diễn tiến
     suydientien = Suy_Dien_Tien(rule, listTrieuChung)
     suyDienTienKq = suydientien.suy_dien_tien()
     print(Fore.YELLOW,"-->Chatbot: Dựa vào các dấu hiệu trên chúng tôi dự đoán bạn có thể bị các bệnh sau : ")
+    
+
+    #Đưa ra bệnh nghi ngờ sau suy diễn tiến
     print(Fore.YELLOW,"Tổng số bệnh nghi ngờ:", len(suyDienTienKq[2]))
     for i in suyDienTienKq[2]:
         print(i)
         print("=============================")
-
+    print("-->Chatbot: Vui lòng trả lời một vài câu hỏi dưới đây để kết luận được bệnh mà bạn đang mắc phải")
+    
+    #Lấy ra tập suy diễn tiến theo tập bệnh đã có từ suy diến tiến
     db.getSuyDienLui(suyDienTienKq[2])
+    
+    #Thực hiện suy diễn lùi
     suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
     result = suydienlui.suy_dien_lui(listTrieuChung)
+    
+    #Kết luận bệnh sau suy diễn lùi
     print(Fore.YELLOW+f"-->Chatbot: Dựa trên những thông tin mà bạn cung cấp chúng tôi có kết luận sơ bộ là bạn đang mắc bệnh")
     resultDisease = db.getDiseaseById(result)[1];
     print(resultDisease)
+    
+    #Đưa ra lời khuyên dựa vào độ tuổi và bệnh mà người dùng đang mắc
     print(Fore.YELLOW+f"-->Chatbot : Căn cứ vào độ tuổi là {user.age} và bệnh của bạn tôi có một số lời khuyên dành cho bạn như sau :")
     advices = db.getAdviceByDisease(db.getDiseaseById(result)[0],xetNguongTuoi(db.getDiseaseById(result)[0],user.age))
     for advice in advices:
         print(Fore.MAGENTA,advice)
+    print(Fore.YELLOW,"-->Chatbot: ")
     additionAdvice()
     
