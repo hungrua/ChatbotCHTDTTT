@@ -16,19 +16,21 @@ class Suy_Dien_Lui:
                     break 
                 self.check.append(fact.id) #Thêm vào tập triệu chứng được hỏi
                 print(fact.name)
-                print(Fore.YELLOW,"-->Chatbot : Bạn có " + fact.name + " không?") #Hỏi xem có triệu chứng này không?
+                print(Fore.YELLOW,f"-->Chatbot : Bạn có {fact.name} không?") #Hỏi xem có triệu chứng này không?
                 print("1. Có")
                 print("0. Không")
                 answer = int(input(Fore.RED+"-->Người dùng: Câu trả lời của tôi là: "))
                 # print("Cờ đánh dấu", fact.flag)
                 # print(f"Xét xong '{fact}'")
                 if(answer==0): #Nếu trả lời là không thì bỏ qua luật này
+
                     break
                 else : #Nếu có thêm triệu chứng này vào tập facts
                     facts.append(fact.id)
                     print(Fore.YELLOW,"======================")
                     print(Fore.YELLOW,"Danh sách các triệu chứng", facts)
                     print(Fore.YELLOW,"======================")
+
             #Kiểm tra xem với tập fact như vậy đã đủ để kết luận bệnh nào chưa
             fact_set = set(facts)
             tmp = []
@@ -39,12 +41,4 @@ class Suy_Dien_Lui:
             if(rule_set.issubset(fact_set)):
                 return rule['right']
         return "Không có bệnh nào"  #Nếu không xác định được bệnh nào thì kết luận        
-
-
-
-
-
-
-
-
 

@@ -20,8 +20,10 @@ class Suy_Dien_Tien:
                 if rule.right.id in self.facts: #Nếu bệnh đã nằm trong tập fact
                     rule.flag2 = True           #Vế phải của luật nằm trong tập facts đánh dấu cờ 2
                     continue
+                
                 #Kiểm tra xem trong tập facts có đủ triệu chứng để chứng minh luật này không
                 missing = rule.check(self.facts, rule.left.id) 
+                
                 #Nếu đủ tức là giá trị thiếu (missing) là None
                 if missing is None:
                     rule_end = True 
@@ -30,17 +32,11 @@ class Suy_Dien_Tien:
                     self.disease.append(Data(rule.right.id, rule.right.name)) #Thêm vào tập bệnh nghi ngờ
                     self.facts.append(rule.right.id) # Thêm bệnh vào tập facts
                     break
+                
             if rule_end == False: #Nếu tìm được tập luật nào để chứng minh nữa thì dừng
                 break
         return road, self.facts, self.disease
 
-
-    #TÍ NỮA ANH HÂN DTEGN XÓA
-    # def check(self, value):
-    #     for i in self.disease:
-    #         if(str(value) == str(i.id)):
-    #             return True
-    #     return False
 
 
 

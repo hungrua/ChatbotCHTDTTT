@@ -1,11 +1,10 @@
 class AdviceForDisease :
-    def __init__(self,id,advice,disease_id,age):
+    def __init__(self, id, name):
         self.id = id
-        self.advice = advice
-        self.disease_id = disease_id
-        self.age = age
+        self.name = name
     def __str__(self):
         return f"{self.advice}"
+
 class AdviceForAll :
     def __init__(self,id,ask,advice):
         self.id = id
