@@ -6,6 +6,7 @@ from dto.disease import Disease
 from dto.sympton import Symptom
 from dto.user import User
 from colorama import Fore
+from validate import Validate
 import time
 
 user = User(None,1,None,None)
@@ -16,6 +17,7 @@ db.getSuyDienTien()
 trieuChung = db.tapTrieuChung
 rule = db.tapSuyDienTien
 fact_suy_dien_loi_khuyen = []
+validate = Validate()
 
 
 def introduce_question():
@@ -25,15 +27,9 @@ def introduce_question():
     user.name = input(Fore.RED)
     print(Fore.RED+f'-->Người dùng: Tên của tôi là, {user.name}')
     print(Fore.YELLOW+"-->Chatbot: Hãy nhập tuổi của bạn")
-    user.age = int(input(Fore.RED))
+    user.age = validate.validateNumber(input(Fore.RED)) # cần thực hiện validate xem có phải số không
 
     print(Fore.RED+f'-->Người dùng: Tôi {user.age} tuổi')
-    print(Fore.YELLOW+"-->Chatbot: Hãy cho tôi biết chiều cao của bạn ( Đơn vị cm)")
-    user.height = input(Fore.RED)
-    print(Fore.RED+f'-->Người dùng: Tôi cao {user.height} cm')
-    print(Fore.YELLOW+"-->Chatbot: Hãy cho tôi biết cân nặng của bạn ( Đơn vị kg)")
-    user.weight = input(Fore.RED)
-    print(Fore.RED+f'-->Người dùng: Tôi nặng {user.weight} kg')
     print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã cung cấp đủ thông tin!")
     return user
 
@@ -43,8 +39,8 @@ def confirm_question():
     print(Fore.YELLOW+"-->Chatbot: Bạn có đang bị đau ở khớp không ?")
     print("1. Có")
     print("0. Không")
-    answer = input(Fore.RED)
-    if(answer=="0"):
+    answer = validate.validateYesOrNo(input(Fore.RED)) # thực hiện vavlidate(có thể trả lời có: y, yes, có, co, 1, c; không: k, không, khong, no, n)
+    if(answer==False):
         print(Fore.YELLOW+"-->Chatbot: Có vẻ bạn không có dấu hiệu đặc trưng của các bệnh về xương khớp")
         print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!")
         return False
@@ -64,19 +60,19 @@ def where_question(listSymptom):
     index = 1
     for i in range(1,12):
         dict_where_symptom = {}
-        dict_where_symptom['index'] = str(index);
+        dict_where_symptom['index'] = str(index)
         dict_where_symptom['id'] = trieuChung[i]['id']
         dict_where_symptom['name'] = trieuChung[i]['name']
         list_where_symptom.append(dict_where_symptom)
         print(index, trieuChung[i]['name'])
         index+=1
         dict_where_symptom = {}
-    print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," ')
-    answer_where = input(Fore.RED).split(",")
+    print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng ')
+    answer_where = validate.validateListAnswer(input(Fore.RED), index - 1)
     for i in list_where_symptom:
-        # print(type(i['index']))
         if i['index'] in answer_where:
-            print("triệu chứng đau ở đâu", i["id"])
+            # print("triệu chứng đau ở đâu", i["id"])
+            print(listSymptom)
             listSymptom.append(i['id'])
     print([i for i in listSymptom])
     return listSymptom
@@ -88,19 +84,18 @@ def how_question(listSymptom):
     index = 1
     for i in range(12,23):
         dict_how_symptom = {}
-        dict_how_symptom['index'] = str(index);
+        dict_how_symptom['index'] = str(index)
         dict_how_symptom['id'] = trieuChung[i]['id']
         dict_how_symptom['name'] = trieuChung[i]['name']
         list_how_symptom.append(dict_how_symptom)
         print(index, trieuChung[i]['name'])
         index+=1
         dict_how_symptom = {}
-    print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," ')
-    answer_how = input(Fore.RED).split(",")
+    print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng ')
+    answer_how = validate.validateListAnswer(input(Fore.RED), index - 1) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     for i in list_how_symptom:
-        # print(type(i['index']))
         if i['index'] in answer_how:
-            print("triệu chứng đau như thế nào", i["id"])
+            # print("triệu chứng đau như thế nào", i["id"])
             listSymptom.append(i['id'])
     print([i for i in listSymptom])
     return listSymptom
@@ -119,12 +114,12 @@ def when_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_when_symptom = {}
-    print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," ')
-    answer_when = input(Fore.RED).split(",")
+    print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng')
+    answer_when = validate.validateListAnswer(input(Fore.RED), index - 1) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     for i in list_when_symptom:
         # print(type(i['index']))
         if i['index'] in answer_when:
-            print("triệu chứng đau như thế nào", i["id"])
+            # print("triệu chứng đau như thế nào", i["id"])
             listSymptom.append(i['id'])
     print([i for i in listSymptom])
     return listSymptom
@@ -147,8 +142,8 @@ def additionAdvice():
     print(Fore.YELLOW+"-->Chatbot : Bạn có muốn tiếp tục nhận lời khuyên ?")
     print("1. Có")
     print("0. Không")
-    answer = input(Fore.RED)
-    if(answer=="0"):
+    answer = validate.validateYesOrNo(input(Fore.RED)) # thực hiện vavlidate(có thể trả lời có: y, yes, có, co, 1, c; không: k, không, khong, no, n)
+    if(answer==False):
         print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!")
         return False
     print(Fore.YELLOW+"-->Chatbot : Hãy trả lời 2 câu hỏi sau về chế ăn và thói quen vận động hàng ngày của bạn")
@@ -161,9 +156,9 @@ def diet():
     dietAsk  = db.getAdviceById("CD")
     print(Fore.YELLOW+"-->Chatbot: Chế độ ăn hàng ngày của bạn thuộc loại nào dưới đây ?")
     for i in range(len(dietAsk)):
-        print(f"{i+1}. {dietAsk[i].ask}" )
-    print(Fore.YELLOW+'-->Chatbot : Bạn có thể chọn nhiều đáp án cho câu hỏi này,hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," !')
-    answer = input(Fore.RED+f"Câu trả lời của tôi là : ").split(",")
+        print(f"{i+1}. {dietAsk[i].ask} " )
+    print(Fore.YELLOW+'-->Chatbot : Bạn có thể chọn nhiều đáp án cho câu hỏi này,hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng !')
+    answer = validate.validateListAnswer(input(Fore.RED+f"Câu trả lời của tôi là : "), len(dietAsk)) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     print(Fore.YELLOW,"-->Chatbot: Danh sách các lời khuyên theo chế độ ăn của bạn là: ")
     for key in answer:
         for diet in dietAsk:
@@ -176,8 +171,8 @@ def exerciseHabits():
     print(Fore.YELLOW+"-->Chatbot: Thói quen hoạt động của bạn thuộc loại nào dưới đây ?")
     for i in range(len(exerciseHabits)):
         print(f"{i+1}. {exerciseHabits[i].ask} " )
-    print(Fore.YELLOW+'-->Chatbot : Bạn có thể chọn nhiều đáp án cho câu hỏi này,hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," !')
-    answer = input(Fore.RED+f"Câu trả lời của tôi là : ").split(",")
+    print(Fore.YELLOW+'-->Chatbot : Bạn có thể chọn nhiều đáp án cho câu hỏi này,hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng !')
+    answer = validate.validateListAnswer(input(Fore.RED+f"Câu trả lời của tôi là : "), len(exerciseHabits)) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     print(Fore.YELLOW,"-->Chatbot: Danh sách các lời khuyên thói quen hoạt động của bạn là: ")
     for key in answer:
         for exerciseHabit in exerciseHabits:

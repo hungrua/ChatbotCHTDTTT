@@ -1,5 +1,8 @@
 from dto.rule import Rule
 from colorama import Fore
+from validate import Validate
+
+validate = Validate()
 class Suy_Dien_Lui:
     def __init__(self, rules, facts, goal):
         self.rules = rules
@@ -15,15 +18,11 @@ class Suy_Dien_Lui:
                 if  (fact.id not in facts and fact.id in self.check): #Nếu người dùng đã trả lời là không có triệu chứng này thì bỏ qua luật
                     break 
                 self.check.append(fact.id) #Thêm vào tập triệu chứng được hỏi
-                print(fact.name)
                 print(Fore.YELLOW,f"-->Chatbot : Bạn có {fact.name} không?") #Hỏi xem có triệu chứng này không?
                 print("1. Có")
                 print("0. Không")
-                answer = int(input(Fore.RED+"-->Người dùng: Câu trả lời của tôi là: "))
-                # print("Cờ đánh dấu", fact.flag)
-                # print(f"Xét xong '{fact}'")
-                if(answer==0): #Nếu trả lời là không thì bỏ qua luật này
-
+                answer = validate.validateYesOrNo(input(Fore.RED+"-->Người dùng: Câu trả lời của tôi là: "))
+                if(answer==False):
                     break
                 else : #Nếu có thêm triệu chứng này vào tập facts
                     facts.append(fact.id)

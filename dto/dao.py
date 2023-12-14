@@ -63,7 +63,6 @@ class Converter:
             else :
                 value+= "'" + benhNghiNgo[i].id+ "'"
         dbSuyDienLui = mydb.cursor()
-        print("Value", value)
         dbSuyDienLui.execute(
             "select * from inference " +
             "left join rule on inference.law_id = rule.id " +
