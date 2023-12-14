@@ -30,13 +30,6 @@ def introduce_question():
     user.age = validate.validateNumber(input(Fore.RED)) # cần thực hiện validate xem có phải số không
 
     print(Fore.RED+f'-->Người dùng: Tôi {user.age} tuổi')
-    print(Fore.YELLOW+"-->Chatbot: Hãy cho tôi biết chiều cao của bạn ( Đơn vị cm)")
-    user.height = validate.validateNumber(input(Fore.RED)) # cần thực hiện validate xem có phải số không
-    print(Fore.RED+f'-->Người dùng: Tôi cao {user.height} cm')
-
-    print(Fore.YELLOW+"-->Chatbot: Hãy cho tôi biết cân nặng của bạn ( Đơn vị kg)")
-    user.weight = validate.validateNumber(input(Fore.RED)) # cần thực hiện validate xem có phải số không
-    print(Fore.RED+f'-->Người dùng: Tôi nặng {user.weight} kg')
 
     print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã cung cấp đủ thông tin!")
 
@@ -74,6 +67,7 @@ def where_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_where_symptom = {}
+    print("0", "Tôi không có triệu chứng nào trong các triệu chứng nêu trên.")
     print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng ')
     answer_where = validate.validateListAnswer(input(Fore.RED), index - 1)
     for i in list_where_symptom:
@@ -97,6 +91,7 @@ def how_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_how_symptom = {}
+    print("0", "Tôi không có triệu chứng nào trong các triệu chứng nêu trên.")
     print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng ')
     answer_how = validate.validateListAnswer(input(Fore.RED), index - 1) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     for i in list_how_symptom:
@@ -119,6 +114,7 @@ def when_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_when_symptom = {}
+    print("0", "Tôi không có triệu chứng nào trong các triệu chứng nêu trên.")
     print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng')
     answer_when = validate.validateListAnswer(input(Fore.RED), index - 1) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     for i in list_when_symptom:
@@ -194,10 +190,14 @@ if __name__ =="__main__":
         print(i)
         print("=============================")
 
-    db.getSuyDienLui(suyDienTienKq[2])
-    suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
-    result = suydienlui.suy_dien_lui(listTrieuChung)
-
+    result = None
+    # nếu kết quả của suy diễn tiến chỉ ra được 1 bệnh ==> kết luận người dùng bị mắc bệnh đó luôn
+    if (len(suyDienTienKq[2]) >= 1): 
+        db.getSuyDienLui(suyDienTienKq[2])
+        suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
+        result = suydienlui.suy_dien_lui(listTrieuChung)
+    else: # trường hợp sau suy diễn tiến chỉ ra được 1 bênh duy nhất
+        result = suyDienTienKq[2][0]
 
     print(Fore.YELLOW+f"-->Chatbot: Dựa trên những thông tin mà bạn cung cấp chúng tôi có kết luận sơ bộ là bạn đang mắc bệnh")
     resultDisease = db.getDiseaseById(result)[1]

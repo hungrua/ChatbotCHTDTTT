@@ -1,3 +1,4 @@
+import re
 from colorama import Fore
 
 class Validate:
@@ -37,9 +38,11 @@ class Validate:
                 return True
             return False
     
-    def validateListAnswer(self, list_input, len):
+    def validateListAnswer(self, list_input, length):
+        pattern = r'\s|, |,'
         while True:
-            list_input = list_input.split(",")
+            list_output = []
+            list_input = re.split(pattern, list_input)
             check = False
             for i in list_input:
                 print("Ký tự trong câu trả lời: ", i)
@@ -53,11 +56,21 @@ class Validate:
                     check = True
                     break
                 # kiểm tra xem có số nào nằm ngoài khoảng cho phép không
-                if(number <= 0 or number > len):
-                    print(Fore.YELLOW, f"-->Chatbot: Câu trả lời không hợp lệ, vui lòng nhập đúng định dạng trong Khoảng 1 -> {len} !!")
+                if(number < 0 or number > length):
+                    print(Fore.YELLOW, f"-->Chatbot: Câu trả lời không hợp lệ, vui lòng nhập đúng định dạng trong Khoảng 1 -> {length} !!")
                     list_input = input(Fore.RED)
                     check = True
                     break
+                if(i.strip() not in list_output):
+                    list_output.append(i.strip())
+                
+            print(len(list_output))
+            
+            if (('0' in list_output) and len(list_output) > 1):
+                print(Fore.YELLOW, f"-->Chatbot: Bạn không thể chọn vừa có triệu chứng và vừa không có triệu chứng như vậy, vui lòng nhập lại câu trả lười của bạn !!!")
+                list_input = input(Fore.RED)
+                continue
+
             if check == False:
-                return list_input
+                return list_output
             
