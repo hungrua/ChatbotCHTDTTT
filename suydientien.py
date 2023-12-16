@@ -1,5 +1,5 @@
 from dto.rule import Rule 
-from dto.data import Data
+from dto.disease import Disease
 
 class Suy_Dien_Tien:
 
@@ -29,11 +29,11 @@ class Suy_Dien_Tien:
                     rule_end = True 
                     rule.flag1 = True #Đánh dấu luật đã được chứng minh
                     road.append(rule.rule_id)
-                    self.disease.append(Data(rule.right.id, rule.right.name)) #Thêm vào tập bệnh nghi ngờ
+                    self.disease.append(Disease(rule.right.id, rule.right.name)) #Thêm vào tập bệnh nghi ngờ
                     self.facts.append(rule.right.id) # Thêm bệnh vào tập facts
                     break
                 
-            if rule_end == False: #Nếu tìm được tập luật nào để chứng minh nữa thì dừng
+            if rule_end == False: #Nếu ko tìm được tập luật nào để chứng minh nữa thì dừng
                 break
         return road, self.facts, self.disease
 

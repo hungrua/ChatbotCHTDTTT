@@ -1,15 +1,19 @@
+import re
 from colorama import Fore
 
 class Validate:
     def __init__(self) -> None:
         pass
 
-
     def validateNumber(self, number_input):
         number = None
         while True:
             try:
                 number = int(number_input)
+                if(number <= 0 or number>=120):
+                    print(Fore.YELLOW+"-->Chatbot: Vui lòng nhập đúng định dạng là một số nguyên dương nhỏ hơn 120 !!")
+                    number_input = input(Fore.RED)
+                    continue
                 return number
             except ValueError:
                 print(Fore.YELLOW+"-->Chatbot: Vui lòng nhập đúng định dạng số !!")
@@ -35,12 +39,13 @@ class Validate:
                 return True
             return False
     
-    def validateListAnswer(self, list_input, len):
+    def validateListAnswer(self, list_input, length):
+        pattern = r'\s|, |,'
         while True:
-            list_input = list_input.split(",")
+            list_output = []
+            list_input = re.split(pattern, list_input)
             check = False
             for i in list_input:
-                print("Ký tự trong câu trả lời: ", i)
                 number = None
                 # kiểm tra các số
                 try:
@@ -51,11 +56,20 @@ class Validate:
                     check = True
                     break
                 # kiểm tra xem có số nào nằm ngoài khoảng cho phép không
-                if(number <= 0 or number > len):
-                    print(Fore.YELLOW, f"-->Chatbot: Câu trả lời không hợp lệ, vui lòng nhập đúng định dạng trong Khoảng 1 -> {len} !!")
+                if(number < 0 or number > length):
+                    print(Fore.YELLOW, f"-->Chatbot: Câu trả lời không hợp lệ, vui lòng nhập đúng định dạng trong Khoảng 1 -> {length} !!")
                     list_input = input(Fore.RED)
                     check = True
                     break
+                if(i.strip() not in list_output):
+                    list_output.append(i.strip())
+                
+            
+            if (('0' in list_output) and len(list_output) > 1):
+                print(Fore.YELLOW, f"-->Chatbot: Bạn không thể chọn vừa có triệu chứng và vừa không có triệu chứng như vậy, vui lòng nhập lại câu trả lời của bạn !!!")
+                list_input = input(Fore.RED)
+                continue
+
             if check == False:
-                return list_input
+                return list_output
             

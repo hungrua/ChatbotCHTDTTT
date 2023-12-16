@@ -6,7 +6,6 @@ class Rule:
         self.right = right
         self.flag1 = False
         self.flag2 = False
-        self.asked = False #Cờ đánh dấu câu đã hỏi
     def check(self,facts, id_symptom = None):
         if(id_symptom not in facts):
             return self.left

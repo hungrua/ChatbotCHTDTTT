@@ -23,13 +23,18 @@ validate = Validate()
 def introduce_question():
     print(Fore.YELLOW+"-->Chatbot: Xin chào, tôi là chatbot chuẩn đoán bệnh về xương khớp!")
     print(Fore.YELLOW+"-->Chatbot: Vui lòng điền một số thông tin cá nhân để tiếp tục!")
-    print(Fore.YELLOW+"-->Chatbot: Hãy nhập tên của bạn")
+    print(Fore.YELLOW+"-->Chatbot: Hãy nhập tên của bạn ( Nếu không tiện cung cấp hay nhấn enter )")
     user.name = input(Fore.RED)
-    print(Fore.RED+f'-->Người dùng: Tên của tôi là, {user.name}')
+    if(user.name!="") :
+        print(Fore.RED+f'-->Người dùng: Tên của tôi là, {user.name}')
+    else :
+        print(Fore.RED+f'-->Người dùng: Tôi không tiện cung cấp tên')
     print(Fore.YELLOW+"-->Chatbot: Hãy nhập tuổi của bạn")
+    
     user.age = validate.validateNumber(input(Fore.RED)) # cần thực hiện validate xem có phải số không
-
+    
     print(Fore.RED+f'-->Người dùng: Tôi {user.age} tuổi')
+
     print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã cung cấp đủ thông tin!")
     return user
 
@@ -43,12 +48,12 @@ def confirm_question():
     if(answer==False):
         print(Fore.YELLOW+"-->Chatbot: Có vẻ bạn không có dấu hiệu đặc trưng của các bệnh về xương khớp")
         print(Fore.YELLOW+"-->Chatbot: Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!")
-        return False
+        exit()
     NewAllSymLst.append(trieuChung[0]['id'])
     print(
         Fore.YELLOW+'-->Chatbot: Danh sách mã các triệu chứng bạn đang mắc phải:'
     )
-    print([i for i in NewAllSymLst])
+    # print([i for i in NewAllSymLst])
     return NewAllSymLst
 
 
@@ -67,6 +72,7 @@ def where_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_where_symptom = {}
+    print("0", "Tôi không có triệu chứng nào trong các triệu chứng nêu trên.")
     print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hãy nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng ')
     answer_where = validate.validateListAnswer(input(Fore.RED), index - 1)
     for i in list_where_symptom:
@@ -91,6 +97,7 @@ def how_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_how_symptom = {}
+    print("0", "Tôi không có triệu chứng nào trong các triệu chứng nêu trên.")
     print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng ')
     answer_how = validate.validateListAnswer(input(Fore.RED), index - 1) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     for i in list_how_symptom:
@@ -114,6 +121,7 @@ def when_question(listSymptom):
         print(index, trieuChung[i]['name'])
         index+=1
         dict_when_symptom = {}
+    print("0", "Tôi không có triệu chứng nào trong các triệu chứng nêu trên.")
     print(Fore.YELLOW+'-->Chatbot: Nếu bị nhiều hơn 1 triệu chứng hay nhập các lựa chọn ngăn cách nhau bởi dấu "," hoặc khoảng trắng')
     answer_when = validate.validateListAnswer(input(Fore.RED), index - 1) # cần validate dạng nhập vào có dấu cách nhau bằng dấu ", ", validate dạng số, có năm trong dải số không
     for i in list_when_symptom:
@@ -190,6 +198,7 @@ if __name__ =="__main__":
     listTrieuChung = when_question(listTrieuChung) #Câu hỏi đau khi nào
     
     #Thực hiện suy diễn tiến
+    
     suydientien = Suy_Dien_Tien(rule, listTrieuChung)
     suyDienTienKq = suydientien.suy_dien_tien()
     print(Fore.YELLOW,"-->Chatbot: Dựa vào các dấu hiệu trên chúng tôi dự đoán bạn có thể bị các bệnh sau : ")
@@ -200,17 +209,18 @@ if __name__ =="__main__":
     for i in suyDienTienKq[2]:
         print(i)
         print("=============================")
-    print("-->Chatbot: Vui lòng trả lời một vài câu hỏi dưới đây để kết luận được bệnh mà bạn đang mắc phải")
+
+    result = None
+    # nếu kết quả của suy diễn tiến chỉ ra được 1 bệnh ==> kết luận người dùng bị mắc bệnh đó luôn
+    if (len(suyDienTienKq[2]) >= 1):
+        #Lấy ra tập suy diễn tiến theo tập bệnh đã có từ suy diến tiến 
+        db.getSuyDienLui(suyDienTienKq[2])
+        #Thực hiện suy diễn lùi
+        suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
+        result = suydienlui.suy_dien_lui(listTrieuChung)
+    else: # trường hợp sau suy diễn tiến chỉ ra được 1 bênh duy nhất
+        result = suyDienTienKq[2][0]
     
-    #Lấy ra tập suy diễn tiến theo tập bệnh đã có từ suy diến tiến
-    db.getSuyDienLui(suyDienTienKq[2])
-    
-    #Thực hiện suy diễn lùi
-    suydienlui = Suy_Dien_Lui(db.tapSuyDienLui,listTrieuChung,suyDienTienKq[2])
-    result = suydienlui.suy_dien_lui(listTrieuChung)
-    
-    
-    #Kết luận bệnh sau suy diễn lùi
     print(Fore.YELLOW+f"-->Chatbot: Dựa trên những thông tin mà bạn cung cấp chúng tôi có kết luận sơ bộ là bạn đang mắc bệnh")
     resultDisease = db.getDiseaseById(result)[1]
     print(resultDisease)

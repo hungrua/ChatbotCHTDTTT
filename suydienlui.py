@@ -26,9 +26,9 @@ class Suy_Dien_Lui:
                     break
                 else : #Nếu có thêm triệu chứng này vào tập facts
                     facts.append(fact.id)
-                    print(Fore.YELLOW,"======================")
-                    print(Fore.YELLOW,"Danh sách các triệu chứng", facts)
-                    print(Fore.YELLOW,"======================")
+                    # print(Fore.YELLOW,"======================")
+                    # print(Fore.YELLOW,"Danh sách các triệu chứng", facts)
+                    # print(Fore.YELLOW,"======================")
 
             #Kiểm tra xem với tập fact như vậy đã đủ để kết luận bệnh nào chưa
             fact_set = set(facts)
